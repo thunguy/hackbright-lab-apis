@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-
 from pprint import pformat
 import os
 import requests
@@ -68,10 +67,18 @@ def find_afterparties():
 @app.route('/event/<id>')
 def get_event_details(id):
     """View the details of an event."""
+    
+    url = f'https://app.ticketmaster.com/discovery/v2/events/{id}'
+    payload = {"apikey": API_KEY}
 
-    # TODO: Finish implementing this view function
+    response = requests.get(url, params=payload)
+    event = response.json()
+    print(event)
+    venues = event['_embedded']['venues']
 
-    return render_template('event-details.html')
+    return render_template('event-details.html',
+                            event=event,
+                            venues=venues)
 
 
 if __name__ == '__main__':
